@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, sans-serif; }
+.input { @apply w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-sm; }
+.label { @apply block text-xs font-medium text-slate-600; }
+.button-primary { @apply rounded bg-indigo-600 px-3 py-2 text-sm font-medium text-white; }
+.button-secondary { @apply rounded border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700; }
+.button-danger { @apply rounded border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700; }

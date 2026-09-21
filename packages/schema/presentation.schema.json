@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://brahma-slides.dev/schema/presentation/v1",
+  "title": "Brahma Slides Presentation IR v1",
+  "type": "object",
+  "required": ["id", "metadata", "dimensions", "theme", "assets", "slides", "version"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "metadata": {"type": "object", "required": ["title"], "properties": {"title": {"type": "string", "minLength": 1}, "description": {"type": "string"}}, "additionalProperties": false},
+    "dimensions": {"type": "object", "required": ["width", "height", "unit"], "properties": {"width": {"type": "number", "exclusiveMinimum": 0}, "height": {"type": "number", "exclusiveMinimum": 0}, "unit": {"const": "in"}}, "additionalProperties": false},
+    "theme": {"type": "object", "required": ["colors", "typography", "spacing"], "properties": {"colors": {"type": "object", "required": ["background", "foreground", "primary", "secondary", "accent"], "additionalProperties": {"type": "string"}}, "typography": {"type": "object", "required": ["heading", "body", "caption"], "additionalProperties": {"type": "string"}}, "spacing": {"type": "number", "minimum": 0}}, "additionalProperties": false},
+    "assets": {"type": "array", "items": {"type": "object"}},
+    "slides": {"type": "array", "items": {"$ref": "#/$defs/slide"}},
+    "version": {"type": "integer", "minimum": 1}
+  },
+  "$defs": {
+    "slide": {"type": "object", "required": ["id", "order", "layout", "background", "elements", "speaker_notes"], "properties": {"id": {"type": "string", "format": "uuid"}, "order": {"type": "integer", "minimum": 0}, "layout": {"type": "string"}, "background": {"type": "string"}, "speaker_notes": {"type": "string"}, "elements": {"type": "array", "items": {"$ref": "#/$defs/element"}}}, "additionalProperties": false},
+    "element": {"oneOf": [{"$ref": "#/$defs/text"}, {"$ref": "#/$defs/image"}, {"$ref": "#/$defs/shape"}, {"$ref": "#/$defs/line"}, {"$ref": "#/$defs/group"}]},
+    "base": {"type": "object", "required": ["id", "type", "x", "y", "width", "height"], "properties": {"id": {"type": "string", "format": "uuid"}, "x": {"type": "number", "minimum": 0}, "y": {"type": "number", "minimum": 0}, "width": {"type": "number", "exclusiveMinimum": 0}, "height": {"type": "number", "exclusiveMinimum": 0}, "rotation": {"type": "number"}, "opacity": {"type": "number", "minimum": 0, "maximum": 1}, "z_index": {"type": "integer"}}},
+    "text": {"allOf": [{"$ref": "#/$defs/base"}, {"properties": {"type": {"const": "text"}, "text": {"type": "string"}, "font_family": {"type": "string"}, "font_size": {"type": "number", "exclusiveMinimum": 0}, "font_weight": {"type": "integer", "minimum": 100, "maximum": 900}, "alignment": {"enum": ["left", "center", "right"]}, "vertical_alignment": {"enum": ["top", "middle", "bottom"]}, "color": {"type": "string"}, "line_height": {"type": "number", "exclusiveMinimum": 0}}, "required": ["text"]}]},
+    "image": {"allOf": [{"$ref": "#/$defs/base"}, {"properties": {"type": {"const": "image"}, "source": {"type": "string", "minLength": 1}, "fit": {"enum": ["contain", "cover", "fill"]}, "alt": {"type": "string"}}, "required": ["source"]}]},
+    "shape": {"allOf": [{"$ref": "#/$defs/base"}, {"properties": {"type": {"const": "shape"}, "shape_type": {"enum": ["rectangle", "rounded_rectangle", "ellipse"]}, "fill": {"type": "string"}, "stroke": {"type": "string"}, "stroke_width": {"type": "number", "minimum": 0}, "radius": {"type": "number", "minimum": 0}}, "required": ["shape_type"]}]},
+    "line": {"allOf": [{"$ref": "#/$defs/base"}, {"properties": {"type": {"const": "line"}, "stroke": {"type": "string"}, "stroke_width": {"type": "number", "minimum": 0}}, "required": ["type"]}]},
+    "group": {"allOf": [{"$ref": "#/$defs/base"}, {"properties": {"type": {"const": "group"}, "children": {"type": "array"}}, "required": ["children"]}]}
+  },
+  "additionalProperties": false
+}
